@@ -1,0 +1,23 @@
+.error {
+    border: solid;
+    border-color: red;
+    border-width: 1px;
+    border-radius: 3px;
+    padding: 5px;
+    margin: 10px;
+    background-color: rgb(247, 173, 173) ;
+    color: red;
+    width: 70%;
+}
+
+.success {
+    border: solid;
+    border-color: rgb(0, 90, 21);
+    border-width: 1px;
+    border-radius: 3px;
+    padding: 5px;
+    margin: 10px;
+    background-color: rgb(160, 252, 164) ;
+    color: rgb(1, 112, 25);
+    width: 70%;
+}

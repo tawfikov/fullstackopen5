@@ -21,3 +21,12 @@
     color: rgb(1, 112, 25);
     width: 70%;
 }
+
+.blog {
+    border: solid;
+    border-radius: 7px;
+    padding: 5px;
+    margin: 10px;
+    border-width: 1px;
+
+}

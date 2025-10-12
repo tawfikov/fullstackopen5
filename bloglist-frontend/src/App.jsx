@@ -13,13 +13,18 @@ const App = () => {
   const [errorMess, setErrorMess]= useState(null)
   const [successMess, setSuccessMess] = useState(null)
 
+
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    const getBlogs = async () => {
+      const blogs = await blogService.getAll()
+      const sortedBlogs = blogs.sort((a, b) => b.likes.length - a.likes.length)
+      setBlogs(sortedBlogs)
+    }
+
+    getBlogs()
   }, [])
 
-  useEffect(()=> {
+  useEffect(() => {
     const loggedUserJson = window.localStorage.getItem('loggedUser')
     if (loggedUserJson) {
       const user = JSON.parse(loggedUserJson)
@@ -28,10 +33,12 @@ const App = () => {
     }
   }, [])
 
+
+
   const handleLogin = async(e) => {
     e.preventDefault()
     try {
-      const userData = await loginService.login({username, password})
+      const userData = await loginService.login({ username, password })
       setUser(userData)
       window.localStorage.setItem('loggedUser', JSON.stringify(userData))
       blogService.setToken(userData.token)
@@ -39,7 +46,7 @@ const App = () => {
       setPassword('')
     } catch {
       setErrorMess('Wrong Credentials')
-      setTimeout(()=> {
+      setTimeout(() => {
         setErrorMess(null)
       }, 5000)
     }
@@ -49,18 +56,31 @@ const App = () => {
     window.localStorage.removeItem('loggedUser')
     setUser(null)
   }
-  
+
   const handlePosting = async (newBlog) => {
     try {
       const savedBlog = await blogService.create(newBlog)
-      setBlogs(blogs.concat(savedBlog))
+      console.log(savedBlog)
+      setBlogs(blogs.concat({ ...savedBlog, user: { name: user.name, id: user.id } }))
       setSuccessMess(`a new blog "${savedBlog.title}" added successfully!`)
       setTimeout(() => setSuccessMess(null), 5000)
     } catch(error) {
       setErrorMess(error.message)
-      setTimeout(()=> {
+      setTimeout(() => {
         setErrorMess(null)
       }, 5000)
+    }
+  }
+
+  const handleLikes = async(blog) => {
+    const savedBlog = await blogService.like(blog.id)
+    setBlogs(blogs.map(b => b.id !== blog.id? b : { ...savedBlog, user: blog.user }))
+  }
+
+  const handleDelete = async(blog) => {
+    if (window.confirm(`Delete blog ${blog.title}?`)) {
+      await blogService.remove(blog.id)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
     }
   }
 
@@ -72,10 +92,10 @@ const App = () => {
         <Notification message={errorMess} type='error' />
         <form onSubmit={handleLogin}>
           <div>
-            <label>Username <input type="text" value={username} onChange={({target})=>setUsername(target.value)} /></label>
-            </div>
+            <label>Username <input type="text" value={username} onChange={({ target }) => setUsername(target.value)} /></label>
+          </div>
           <div>
-            <label>Password <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)}/></label>
+            <label>Password <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}/></label>
           </div>
           <button>Log in</button>
         </form>
@@ -84,18 +104,18 @@ const App = () => {
   }
   return (
     <div>
-      <h2>blogs</h2>
+      <h2>Blogs</h2>
       <div>
         <h6>{user.name} is logged in</h6>
         <button onClick={handleLogout}>Log out</button>
-        <br /> 
+        <br />
         <Notification message={successMess} type='success' />
         <Notification message={errorMess} type='error' />
         <Form handlePosting={handlePosting}/>
         <br />
       </div>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} handleLikes={handleLikes} currentUser={user} handleDelete={handleDelete} />
       )}
     </div>
   )

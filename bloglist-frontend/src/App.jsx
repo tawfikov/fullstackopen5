@@ -106,12 +106,12 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <nav className="bg-gray-800 p-4 text-white flex justify-between items-center">
+        <nav className="bg-gray-800 p-4 text-white flex flex-wrap justify-between items-center">
           <div className="flex items-center gap-6">
             <h1 className="text-2xl font-bold tracking-wide">Blogs</h1>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
           </div>
         </nav>
         <Sign setUser={setUser} setErrorMess={setErrorMess} errorMess={errorMess} />
@@ -119,7 +119,7 @@ const App = () => {
     )}
   return (
     <div>
-      <nav className="bg-gray-800 p-4 text-white flex justify-between items-center">
+      <nav className="bg-gray-800 p-4 text-white flex flex-wrap justify-between items-center">
         <div className="flex items-center gap-6">
           <h1 className="text-2xl font-bold tracking-wide">Blogs</h1>
           <input
@@ -127,12 +127,12 @@ const App = () => {
             value={search}
             placeholder="Search by title..."
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-gray-200 px-3 py-1.5 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm w-56"
+            className="bg-gray-200 px-3 py-1.5 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm w-56 mb-2"
           />
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-300">{user.name} is logged in</span>
+          <span className="text-xs text-gray-300">{user.name} is logged in</span>
 
           <button
             onClick={() => setIsVisible(true)}
